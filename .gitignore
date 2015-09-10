@@ -1,9 +1,6 @@
-pom.xml
-*jar
-/lib/
-/classes/
-/out/
-/target/
-.lein-deps-sum
-.lein-repl-history
-.lein-plugins/
+target/
+.cache
+.classpath
+.project
+.settings/
+.idea
