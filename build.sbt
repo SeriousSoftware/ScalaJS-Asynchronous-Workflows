@@ -1,4 +1,4 @@
-version := "1.0"
+version := "0.0"
 organization := "io.github.serioussoftware"
 organizationName := "Serious Software"
 organizationHomepage := Some(url("http://serioussoftware.github.io"))
@@ -12,7 +12,7 @@ lazy val root = (project in file(".")).enablePlugins(ScalaJSPlugin)
 workbenchSettings
 
 // Name is a prefix in the object code filename.
-name := "Asynchronous Workflows 0"
+name := "Asynchronous Workflows"
 scalaVersion := "2.11.7"
 
 // Optional, necessary to sbt run, needs phantomJS to be installed.
@@ -23,7 +23,8 @@ libraryDependencies ++= Seq(
   "org.scala-lang.modules" %% "scala-async" % "0.9.5",
   "org.scala-js" %%% "scalajs-dom" % "0.8.1",
   "be.doeraene" %%% "scalajs-jquery" % "0.8.0",
-  "com.lihaoyi" %%% "scalatags" % "0.5.2"
+  "com.lihaoyi" %%% "scalatags" % "0.5.2",
+  "com.lihaoyi" %%% "utest" % "0.3.1" % "test"
 )
 skip in packageJSDependencies := false // All JavaScript dependencies to be concatenated to a single file
 
@@ -31,3 +32,5 @@ skip in packageJSDependencies := false // All JavaScript dependencies to be conc
 bootSnippet := "ss000101.AsyncWorkflow().initialization();"
 // Update without refreshing the page every time fastOptJS completes
 updateBrowsers <<= updateBrowsers.triggeredBy(fastOptJS in Compile)
+
+testFrameworks += new TestFramework("utest.runner.Framework")
