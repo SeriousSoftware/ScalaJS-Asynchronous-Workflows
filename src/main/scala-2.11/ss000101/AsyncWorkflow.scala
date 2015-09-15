@@ -4,7 +4,6 @@ import org.scalajs.dom.ext.KeyCode.{Left, Right}
 import org.scalajs.dom.{MouseEvent, document}
 import org.scalajs.jquery.{JQueryEventObject, jQuery}
 
-import scala.annotation.tailrec
 import scala.async.Async.{async, await}
 import scala.concurrent.{Future, Promise}
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
@@ -36,92 +35,81 @@ object AsyncWorkflow {
   @JSExport
   def initialization() = {}
 
-  //
-
   // Example 1
-  def ex01 =
+  def ex01() =
     async {
-      val showHooked = show("div#ex1-messages", _: String, _: Boolean)
+      val _show = show("div#ex1-messages", _: String, _: Boolean)
 
-      showHooked("Waiting for a click …", false)
+      _show("Waiting for a click …", false)
       await(f1())
-      showHooked("Got a click!", true)
+      _show("Got a click!", true)
     }
 
   // Example 2
-  def ex02 =
+  def ex02() =
     async {
-      val showHooked = show("div#ex2-messages", _: String, _: Boolean)
+      val _show = show("div#ex2-messages", _: String, _: Boolean)
 
-      showHooked("Waiting for a click …", false)
+      _show("Waiting for a click …", false)
       await(f2())
-      showHooked("Got a click!", true)
-      showHooked("Waiting for another click …", true)
+      _show("Got a click!", true)
+      _show("Waiting for another click …", true)
       await(f2())
-      showHooked("Done!", true)
+      _show("Done!", true)
     }
 
   // Example 3
-  def ex03 =
+  def ex03() =
     async {
-      val showHooked = show("div#ex3-messages", _: String, _: Boolean)
+      val _show = show("div#ex3-messages", _: String, _: Boolean)
 
-      showHooked("Waiting for a click from Button A …", false)
+      _show("Waiting for a click from Button A …", false)
       await(f3a())
-      showHooked("Got a click!", true)
-      showHooked("Waiting for a click from Button B …", true)
+      _show("Got a click!", true)
+      _show("Waiting for a click from Button B …", true)
       await(f3b())
-      showHooked("Done!", true)
+      _show("Done!", true)
     }
-
-  ex01
 
   //
   //TODO Example 4
-  def ex04 = async {}
-
-  ex02
+  def ex04() = async {}
 
   //TODO Example 5
-  def ex05 = async {}
-
-  ex03
+  def ex05() = async {}
 
   // Example 6
-  def ex06 =
+  def ex06() =
     async {
-      val showHooked = show("div#ex6-messages", _: String, _: Boolean)
+      val _show = show("div#ex6-messages", _: String, _: Boolean)
 
-      showHooked("Click button to start tracking the mouse!", false)
+      _show("Click button to start tracking the mouse!", false)
       await(f6())
-      jQuery("button#ex6-button").text("Stop")
+      show("button#ex6-button", "Stop")
 
       val mousemove = new Chan[MouseEvent](document.onmousemove = _)
       var running = true
       async {
         while (running) {
           val event: MouseEvent = await(mousemove())
-          showHooked(s"[${event.clientX}, ${event.clientY}]", true)
+          _show(s"[${event.clientX}, ${event.clientY}]", true)
         }
-        showHooked("Done!", true)
+        _show("Done!", true)
       }
       await(f6())
       running = false
 
-      jQuery("button#ex6-button").text("Done!")
-      jQuery("button#ex6-button").addClass("disabled")
-
+      show("button#ex6-button", "Done!")
+      disableKey("button#ex6-button")
     }
 
-  ex04
-
   // Example 7
-  def ex07 = async {
-    val showHooked = show("div#ex7-messages", _: String, _: Boolean)
+  def ex07() = async {
+    val _show = show("div#ex7-messages", _: String, _: Boolean)
 
-    showHooked("Click button to start tracking the mouse!", false)
+    _show("Click button to start tracking the mouse!", false)
     await(f7())
-    jQuery("button#ex7-button").text("Stop")
+    show("button#ex7-button", "Stop")
 
     val mousemove = new Chan[MouseEvent](document.onmousemove = _)
     var running = true
@@ -131,51 +119,33 @@ object AsyncWorkflow {
 
         val event: MouseEvent = await(mousemove.filter(_.clientY % 5 == 0))
 
-        showHooked(s"[${event.clientX}, ${event.clientY}]", true)
+        _show(s"[${event.clientX}, ${event.clientY}]", true)
       }
-      showHooked("Done!", true)
+      _show("Done!", true)
     }
     await(f7())
     running = false
 
-    jQuery("button#ex7-button").text("Done!")
-    jQuery("button#ex7-button").addClass("disabled")
+    show("button#ex7-button", "Done!")
+    disableKey("button#ex7-button")
   }
-
-  ex05
-
-  /**
-   * Given a element id and a message string append a child paragraph element with the given message string.
-   * @param display
-   * @param message
-   * @param append
-   */
-  def show(display: String, message: String, append: Boolean = true): Unit = {
-    val item = jQuery(display)
-    if (append) item.append(s"<p>$message</p>")
-    else item.html(s"<p>$message</p>")
-  }
-
-  ex06
 
   // Example 8
-  def ex08 = async {
-    val showHooked = show("div#ex8-messages", _: String, _: Boolean)
+  def ex08() = async {
+    val _show = show("div#ex8-messages", _: String, _: Boolean)
 
-    showHooked("Click the button ten times!", false)
+    _show("Click the button ten times!", false)
     var i = 0
     while (i < 10) {
       await(f8())
       i += 1
-      showHooked(s"$i clicks!", true)
+      _show(s"$i clicks!", true)
     }
-    showHooked("Done!", true)
+    _show("Done!", true)
   }
 
-  ex07
-
   // Example 9
-  def ex09 = async {
+  def ex09() = async {
     val UpperBound = list.size - 1
     var idx = 0
     while (true) {
@@ -187,53 +157,10 @@ object AsyncWorkflow {
     }
   }
 
-  ex08
-
-  /**
-   * Given a current index and the collection disable or enable the given previous and next controls.
-   * @param i
-   * @param buttonPrev
-   * @param buttonNext
-   * @param list
-   * @param idx
-   * @param display
-   * @return
-   */
-  def grayOut(i: Int,
-              buttonPrev: String,
-              buttonNext: String,
-              list: Vector[String] = Vector(),
-              idx: Int = 0,
-              display: String = "") = {
-
-    val running = display != ""
-    require(running == (list != Vector()))
-    lazy val UpperBound = list.size - 1
-    if (running) {
-      i match {
-        case 0 =>
-          jQuery(buttonPrev).addClass("disabled")
-          jQuery(buttonNext).removeClass()
-        case UpperBound =>
-          jQuery(buttonNext).addClass("disabled")
-          jQuery(buttonPrev).removeClass()
-        case _ =>
-          jQuery(buttonPrev).removeClass()
-          jQuery(buttonNext).removeClass()
-      }
-      show(display, s"${list(idx)}", append = false)
-    } else {
-      jQuery(buttonPrev).addClass("disabled")
-      jQuery(buttonNext).addClass("disabled")
-    }
-  }
-
-  ex09
-
   def list = Vector("aardvark", "beetle", "cat", "dog", "elk", "ferret", "goose", "hippo", "ibis", "jellyfish", "kangaroo")
 
   // Example 10
-  def ex10 {
+  def ex10() {
     var idx = 0
     grayOut(idx, "button#ex10-button-prev", "button#ex10-button-next")
 
@@ -248,9 +175,8 @@ object AsyncWorkflow {
             case _ =>
           }
       }
-
+      show("button#ex10-button-start-stop", "Stop")
       grayOut(idx, "button#ex10-button-prev", "button#ex10-button-next", list, idx, "td#ex10-card")
-      show("button#ex10-button-start-stop", "Stop !", append = false)
 
       async {
         while (true) {
@@ -264,15 +190,80 @@ object AsyncWorkflow {
       }
 
       await(f10s())
-      jQuery("button#ex10-button-start-stop").text("Done!")
-      jQuery("button#ex10-button-start-stop").addClass("disabled")
+      show("button#ex10-button-start-stop", "Done!")
+      disableKey("button#ex10-button-start-stop")
 
       grayOut(idx, "button#ex10-button-prev", "button#ex10-button-next")
 
     }
   }
 
-  ex10
+  /** Disable a key by its given id */
+  def disableKey(buttonId: String): Unit = jQuery(buttonId).addClass("disabled")
+
+  /**
+   * Given a element id and a message string, append a child paragraph element with the given message string.
+   * @param display
+   * @param message
+   * @param append
+   */
+  def show(display: String, message: String, append: Boolean = false): Unit = {
+    val item = jQuery(display)
+    if (append) item.append(s"<p>$message</p>")
+    else item.html(s"<p>$message</p>")
+  }
+
+  /**
+   * Given a current index and the collection disable or enable the given previous and next controls.
+   * @param i
+   * @param buttonPrev
+   * @param buttonNext
+   * @param list
+   * @param idx
+   * @param displayId
+   * @return
+   */
+  def grayOut(i: Int,
+              buttonPrev: String,
+              buttonNext: String,
+              list: Vector[String] = Vector(),
+              idx: Int = 0,
+              displayId: String = "") = {
+
+    val running = displayId != ""
+    require(running == (list != Vector()), "Func Grayout: List must be supplyed for the running mode.")
+
+    lazy val UpperBound = list.length - 1
+    if (running) {
+      i match {
+        case 0 =>
+          disableKey(buttonPrev)
+          jQuery(buttonNext).removeClass()
+        case UpperBound =>
+          disableKey(buttonNext)
+          jQuery(buttonPrev).removeClass()
+        case _ =>
+          jQuery(buttonPrev).removeClass()
+          jQuery(buttonNext).removeClass()
+      }
+      show(displayId, s"${list(idx)}")
+    } else {
+      disableKey(buttonPrev)
+      disableKey(buttonNext)
+    }
+  }
+
+  ex01()
+  ex02()
+  ex03()
+  ex04()
+  ex05()
+  ex06()
+  ex07()
+  ex08()
+  ex09()
+  ex10()
+  jQuery("div#ex11").remove()
 }
 
 /**
@@ -281,7 +272,7 @@ object AsyncWorkflow {
  * @tparam T
  */
 case class Chan[T]() {
-  private[this] var promise: Promise[T] = _
+  private var promise: Promise[T] = Promise[T]()
 
   /** Auxiliary constructor
    Binds a handler with the "write" in casu update() */
@@ -291,19 +282,19 @@ case class Chan[T]() {
   }
 
   /** Channels' "Write" or "put" function, called by an assigned to the instance(). */
-  def update(t: T): Unit = if (!(promise == null || promise.isCompleted)) promise.success(t)
+  def update(t: T): Unit = if (!promise.isCompleted) promise.success(t)
 
   def filter(p: (T) => Boolean): Future[T] = {
-    //var value1 : Option[T] = None
     apply().flatMap(value => if (p(value)) Future(value) else filter(p))
   }
 
-  /* Channels' "Read" or "get" function, called by referring to the instance().*/
+  /** Channels' "Read" or "get" function, called by referring to the instance(). */
   def apply(): Future[T] = {
     promise = Promise[T]()
     promise.future
   }
 
+  /** Channels' "Alt" function for waiting on two events */
   def |(other: Chan[T]): Future[T] = {
     val p = Promise[T]()
     for {
