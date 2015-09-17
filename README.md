@@ -4,8 +4,6 @@ Front End Application with Async Await for sequential workflow.
 
 *This code is very much a work in progress.*
 
-See at [Designing Front End Applications with core.async](http://go.cognitect.com/core_async_webinar_recording) about Clojure go blocks with core.async library.
-
 ## Usage
 1. Naturally, at least a Java SE Development Kit is installed on your platform and environment variable JAVA_HOME has a
 path to it. E.g. `C:\Program Files\Java\jdk1.8.0_51\` which holds the `jre` directory.
@@ -27,9 +25,13 @@ path to it. E.g. `C:\Program Files\Java\jdk1.8.0_51\` which holds the `jre` dire
 When running this way a tool ["workbench"](https://github.com/lihaoyi/workbench) also will be running in the browser noticeable
 opening the console of the browser.
 
+## In conclusion
+I was inspired by [Designing Front End Applications with core.async](http://go.cognitect.com/core_async_webinar_recording) about Clojure go blocks with core.async library.
+And I want to proof that [Scala.JS](scala-js.org) have at least the same or even better capabilities as ClosureScript.
+
 ## Copyrights
 AsyncWorkflow.scala 2015-09-11 Asynchronous Workflows
-©2015 by F.W. van den Berg
+Â© 2015 by F.W. van den Berg
 Licensed under the EUPL V.1.1
 
 This Software is provided to You under the terms of the European Union Public License (the "EUPL") version 1.1

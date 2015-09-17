@@ -8,12 +8,14 @@ import scala.async.Async.{async, await}
 import scala.concurrent.{Future, Promise}
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.scalajs.js.annotation.JSExport
+import scala.scalajs.js.Date
+
 
 @JSExport
 object AsyncWorkflow {
   val (f1, f2, f3a, f3b, f4, f5, f6, f7, f8, f9, f10s, f10, f11, f12) =
     (Chan[Null](), Chan[Null](), Chan[Null](), Chan[Null](), Chan[Null](), Chan[Null](), Chan[Null](),
-      Chan[Null](), Chan[Null](), Chan[Char](), Chan[Null](), Chan[Char](), Chan[Null](), Chan[Null]())
+      Chan[Null](), Chan[Null](), Chan[Int](), Chan[Null](), Chan[Int](), Chan[Null](), Chan[Null]())
 
   // An assignment to an instance of a Scala class calls the update method.
   jQuery("button#ex1-button").click({ () => f1() = null })
@@ -25,11 +27,11 @@ object AsyncWorkflow {
   jQuery("button#ex6-button").click({ () => f6() = null })
   jQuery("button#ex7-button").click({ () => f7() = null })
   jQuery("button#ex8-button").click({ () => f8() = null })
-  jQuery("button#ex9-button-next").click(() => f9() = '+')
-  jQuery("button#ex9-button-prev").click(() => f9() = '-')
+  jQuery("button#ex9-button-next").click(() => f9() = Right)
+  jQuery("button#ex9-button-prev").click(() => f9() = Left)
   jQuery("button#ex10-button-start-stop").click(() => f10s() = null)
-  jQuery("button#ex10-button-next").click(() => f10() = '+')
-  jQuery("button#ex10-button-prev").click(() => f10() = '-')
+  jQuery("button#ex10-button-next").click(() => f10() = Right)
+  jQuery("button#ex10-button-prev").click(() => f10() = Left)
   jQuery("button#ex11-button").click(() => f11() = null)
 
   @JSExport
@@ -73,7 +75,34 @@ object AsyncWorkflow {
 
   //
   //TODO Example 4
-  def ex04() = async {}
+  def ex04() = async {
+    async {
+      val _show = show("div#ex4-messages", _: String, _: Boolean)
+
+      _show("Waiting for a click …", false)
+      await(f1())
+      _show("Got a click!", true)
+    }
+
+    val _show = show("div#ex4-messages", _: String, _: Boolean)
+
+    val dateTime = new Date()
+
+    _show(dateTime.toISOString(), false)
+
+  }
+
+/* (defn ex4 []
+  (let [clicks (events->chan (by-id "ex4-button-a") EventType.CLICK)
+  c0     (c han)
+  show!  (partial show! "ex4-messages")]
+  (go
+    (show! "Waiting for click.")
+    (<! clicks)
+    (show! "Putting a value on channel c0, cannot proceed until someone takes")
+    (>! c0 (js/Date.))
+    (show! "We'll never get this far!")
+    (<! c0))))*/
 
   //TODO Example 5
   def ex05() = async {}
@@ -115,10 +144,7 @@ object AsyncWorkflow {
     var running = true
     async {
       while (running) {
-        //mousemove().map { case move => if (move.clientY % 5 == 0) Success(move) else }
-
         val event: MouseEvent = await(mousemove.filter(_.clientY % 5 == 0))
-
         _show(s"[${event.clientX}, ${event.clientY}]", true)
       }
       _show("Done!", true)
@@ -135,11 +161,11 @@ object AsyncWorkflow {
     val _show = show("div#ex8-messages", _: String, _: Boolean)
 
     _show("Click the button ten times!", false)
-    var i = 0
-    while (i < 10) {
+    var i=0
+    if (i < 9) {
+      i +=1
       await(f8())
-      i += 1
-      _show(s"$i clicks!", true)
+      _show(s"$i click${if (i > 1) "s!" else " !"}", true)
     }
     _show("Done!", true)
   }
@@ -151,8 +177,8 @@ object AsyncWorkflow {
     while (true) {
       grayOut(idx, "button#ex9-button-prev", "button#ex9-button-next", list, idx, "td#ex9-card")
       await(f9()) match {
-        case '-' => idx = Math.max(idx - 1, 0)
-        case '+' => idx = Math.min(idx + 1, UpperBound)
+        case Left => idx = Math.max(idx - 1, 0)
+        case Right => idx = Math.min(idx + 1, UpperBound)
       }
     }
   }
@@ -168,12 +194,7 @@ object AsyncWorkflow {
       await(f10s())
 
       jQuery(document).keydown {
-        (evt: JQueryEventObject) =>
-          evt.which match {
-            case Left => f10() = '-'
-            case Right => f10() = '+'
-            case _ =>
-          }
+        evt: JQueryEventObject => f10() = evt.which
       }
       show("button#ex10-button-start-stop", "Stop")
       grayOut(idx, "button#ex10-button-prev", "button#ex10-button-next", list, idx, "td#ex10-card")
@@ -183,8 +204,8 @@ object AsyncWorkflow {
           grayOut(idx, "button#ex10-button-prev", "button#ex10-button-next", list, idx, "td#ex10-card")
           val event = await(f10())
           event match {
-            case '-' => idx = math.max(idx - 1, 0)
-            case '+' => idx = math.min(idx + 1, list.size - 1)
+            case Left => idx = math.max(idx - 1, 0)
+            case Right => idx = math.min(idx + 1, list.size - 1)
           }
         }
       }
