@@ -80,7 +80,7 @@ object AsyncWorkflow {
       val _show = show("div#ex4-messages", _: String, _: Boolean)
 
       _show("Waiting for a click …", false)
-      await(f1())
+      await(f4())
       _show("Got a click!", true)
     }
 
@@ -92,20 +92,35 @@ object AsyncWorkflow {
 
   }
 
-/* (defn ex4 []
-  (let [clicks (events->chan (by-id "ex4-button-a") EventType.CLICK)
-  c0     (c han)
-  show!  (partial show! "ex4-messages")]
-  (go
-    (show! "Waiting for click.")
-    (<! clicks)
-    (show! "Putting a value on channel c0, cannot proceed until someone takes")
-    (>! c0 (js/Date.))
-    (show! "We'll never get this far!")
-    (<! c0))))*/
+  /* (defn ex4 []
+    (let [clicks (events->chan (by-id "ex4-button-a") EventType.CLICK)
+    c0     (c han)
+    show!  (partial show! "ex4-messages")]
+    (go
+      (show! "Waiting for click.")
+      (<! clicks)
+      (show! "Putting a value on channel c0, cannot proceed until someone takes")
+      (>! c0 (js/Date.))
+      (show! "We'll never get this far!")
+      (<! c0))))*/
 
   //TODO Example 5
-  def ex05() = async {}
+  def ex05() = async {
+    async {
+      val _show = show("div#ex4-messages", _: String, _: Boolean)
+
+      _show("Waiting for a click …", false)
+      await(f5())
+      _show("Got a click!", true)
+    }
+
+    val _show = show("div#ex5-messages", _: String, _: Boolean)
+
+    val dateTime = new Date()
+
+    _show(dateTime.toISOString(), false)
+
+  }
 
   // Example 6
   def ex06() =
@@ -161,11 +176,11 @@ object AsyncWorkflow {
     val _show = show("div#ex8-messages", _: String, _: Boolean)
 
     _show("Click the button ten times!", false)
-    var i=0
-    if (i < 9) {
-      i +=1
+    var i = 0
+    while (i <= 9) {
+      i += 1
       await(f8())
-      _show(s"$i click${if (i > 1) "s!" else " !"}", true)
+      _show(f"|$i% 3d click${if (i > 1) "s!" else " !"}%s", true)
     }
     _show("Done!", true)
   }
