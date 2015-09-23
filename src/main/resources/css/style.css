@@ -33,6 +33,10 @@ button.disabled:active {
     background-color: white;
 }
 
+button.disabled {
+    opacity: 0.5;
+}
+
 table td.left {
     vertical-align: top;
 }
@@ -76,6 +80,6 @@ h2 {
     right: 0px;
 }
 
-button.disabled {
-    opacity: 0.5;
+pre {
+    white-space: pre-wrap;
 }

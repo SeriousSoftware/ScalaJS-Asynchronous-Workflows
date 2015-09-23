@@ -27,7 +27,7 @@ opening the console of the browser.
 
 ## In conclusion
 I was inspired by [Designing Front End Applications with core.async](http://go.cognitect.com/core_async_webinar_recording) about Clojure go blocks with core.async library.
-And I want to proof that [Scala.JS](scala-js.org) have at least the same or even better capabilities as ClosureScript.
+And I want to proof that [Scala.JS](scala-js.org) has at least the same or even better capabilities as ClosureScript.
 
 ## Copyrights
 AsyncWorkflow.scala 2015-09-11 Asynchronous Workflows
