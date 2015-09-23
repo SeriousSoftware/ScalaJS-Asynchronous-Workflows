@@ -10,29 +10,22 @@ import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.scalajs.js.annotation.JSExport
 import scala.scalajs.js.Date
 
-
 @JSExport
 object AsyncWorkflow {
-  val (f1, f2, f3a, f3b, f4, f5, f6, f7, f8, f9, f10s, f10, f11, f12) =
-    (Chan[Null](), Chan[Null](), Chan[Null](), Chan[Null](), Chan[Null](), Chan[Null](), Chan[Null](),
-      Chan[Null](), Chan[Null](), Chan[Int](), Chan[Null](), Chan[Int](), Chan[Null](), Chan[Null]())
-
-  // An assignment to an instance of a Scala class calls the update method.
-  jQuery("button#ex1-button").click({ () => f1() = null })
-  jQuery("button#ex2-button").click({ () => f2() = null })
-  jQuery("button#ex3-button-a").click({ () => f3a() = null })
-  jQuery("button#ex3-button-b").click({ () => f3b() = null })
-  jQuery("button#ex4-button").click({ () => f4() = null })
-  jQuery("button#ex5-button").click({ () => f5() = null })
-  jQuery("button#ex6-button").click({ () => f6() = null })
-  jQuery("button#ex7-button").click({ () => f7() = null })
-  jQuery("button#ex8-button").click({ () => f8() = null })
-  jQuery("button#ex9-button-next").click(() => f9() = Right)
-  jQuery("button#ex9-button-prev").click(() => f9() = Left)
-  jQuery("button#ex10-button-start-stop").click(() => f10s() = null)
-  jQuery("button#ex10-button-next").click(() => f10() = Right)
-  jQuery("button#ex10-button-prev").click(() => f10() = Left)
-  jQuery("button#ex11-button").click(() => f11() = null)
+  val (f1, f2, f3a, f3b, f4, f5, f6, f7, f8, f9, f10s, f10, f11) =
+    (Chan("button#ex1-button"),
+      Chan("button#ex2-button"),
+      Chan("button#ex3-button-a"),
+      Chan("button#ex3-button-b"),
+      Chan("button#ex4-button"),
+      Chan("button#ex5-button"),
+      Chan("button#ex6-button"),
+      Chan("button#ex7-button"),
+      Chan("button#ex8-button"),
+      Chan[Int](("button#ex9-button-next", Right), ("button#ex9-button-prev", Left)),
+      Chan("button#ex10-button-start-stop"),
+      Chan[Int](("button#ex10-button-next", Right), ("button#ex10-button-next", Left)),
+      Chan("button#ex11-button"))
 
   @JSExport
   def initialization() = {}
@@ -307,7 +300,7 @@ object AsyncWorkflow {
  *
  * @tparam T
  */
-case class Chan[T]() {
+class Chan[T]() {
   private var promise: Promise[T] = Promise[T]()
 
   /** Auxiliary constructor
@@ -339,4 +332,25 @@ case class Chan[T]() {
     } p.trySuccess(t)
     p.future
   }
+}
+
+object Chan {
+  def apply[T](domElemId: String, signal: T) = {
+    val instance = new Chan[T]()
+    // An assignment to an instance of a Scala class calls the update method.
+    jQuery(domElemId).click({ () => instance() = signal })
+    instance
+  }
+
+  def apply[T](domElemIdCombies: (String, T)*) = {
+    val instance = new Chan[T]()
+    // An assignment to an instance of a Scala class calls the update method.
+    domElemIdCombies.foreach(combi => {
+      jQuery(combi._1).click({ () => instance() = combi._2 })
+    })
+    instance
+  }
+
+  def apply(domElemId: String): Chan[Null] = apply(domElemId, null)
+
 }
