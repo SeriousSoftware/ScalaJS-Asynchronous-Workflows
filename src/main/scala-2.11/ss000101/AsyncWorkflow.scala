@@ -59,24 +59,26 @@ object AsyncWorkflow {
   // Example 1
   def ex01() =
     async {
-      val _show = show("div#ex1-messages", _: String, _: Boolean) // Partially applied
+      var append = false
+      val _show = show("div#ex1-messages", _: String, append) // Partially applied
 
-      _show("Waiting for a click …", false)
+      append = _show("Waiting for a click …")
       await(chan1()) // Do a blocking read for this async block of the channel.
-      _show("Got a click!", true)
+      _show("Got a click!")
     }
 
   // Example 2
   def ex02() =
     async {
-      val _show = show("div#ex2-messages", _: String, _: Boolean)
+      var append = false
+      val _show = show("div#ex2-messages", _: String, append)
 
-      _show("Waiting for a click …", false)
+      append = _show("Waiting for a click …")
       await(chan2())
-      _show("Got a click!", true)
-      _show("Waiting for another click …", true)
+      _show("Got a click!")
+      _show("Waiting for another click …")
       await(chan2())
-      _show("Done!", true)
+      _show("Done!")
     }
 
   // Example 3
@@ -86,7 +88,7 @@ object AsyncWorkflow {
       var append = false
       val _show = show("div#ex3-messages", _: String, append)
 
-      append =_show("Waiting for a click from Button A …")
+      append = _show("Waiting for a click from Button A …")
       await(chan3a())
       _show("Got a click!")
       _show("Waiting for a click from Button B …")
@@ -97,35 +99,36 @@ object AsyncWorkflow {
   //
   //TODO Example 4
   def ex04() = async {
-    val _show = show("div#ex4-messages", _: String, _: Boolean)
+    var append = false
+    val _show = show("div#ex4-messages", _: String, append)
 
-    _show("Waiting for a click …", false)
+    append = _show("Waiting for a click …")
     await(chan4())
-    _show("Got a click!", true)
+    _show("Got a click!")
     chan4D() = new Date()
-    _show("We'll going further!", true)
+    _show("We'll going further!")
     await(chan4D())
-    _show("But we'll never get this far!", true)
+    _show("But we'll never get this far!")
   }
 
   //TODO Example 5
   def ex05() = {
-    val dateTime = new Date()
-    val _show = show("div#ex5-messages", _: String, _: Boolean)
+    var append = false
+    val _show = show("div#ex5-messages", _: String, append)
 
     async {
-      _show("Waiting for a click …", false)
+      append = _show("Waiting for a click …")
       await(chan5())
-      _show("Got a click!", true)
+      _show("Got a click!")
       chan5D() = new Date()
-      _show("We'll going further!", true)
+      _show("We'll going further!")
       val date = await(chan5D())
-      _show(s"Someone put the value on the channel: ${date.toISOString()}", true)
+      _show(s"Someone put the value on the channel: ${date.toISOString()}")
     }
-    async{
-      while(true)
-      {val date = await(chan5D())
-        _show(s"We got a value from waiting channel: ${date.toISOString()}", true)
+    async {
+      while (true) {
+        val date = await(chan5D())
+        _show(s"We got a value from waiting channel: ${date.toISOString()}")
         chan5D() = new Date()
       }
     }
@@ -134,23 +137,27 @@ object AsyncWorkflow {
   // Example 6
   def ex06() =
     async {
-      val _show = show("div#ex6-messages", _: String, _: Boolean)
+      var append = false
+      val _show = show("div#ex6-messages", _: String, append)
 
-      _show("Click button to start tracking the mouse!", false)
+      append = _show("Click button to start tracking the mouse!")
       await(chan6())
       show("button#ex6-button", "Stop")
 
       val mousemove = new Chan[MouseEvent](document.onmousemove = _)
+      val keyPressed = new Chan[MouseEvent]
       var running = true
       async {
         while (running) {
-          val event: MouseEvent = await(mousemove())
-          _show(s"[${event.clientX}, ${event.clientY}]", true)
+          val event: MouseEvent = await(mousemove | keyPressed)
+          if (event != null)
+            _show(s"[${event.clientX}, ${event.clientY}]")
         }
-        _show("Done!", true)
+        _show("Done!")
       }
       await(chan6())
       running = false
+      keyPressed() = null
 
       show("button#ex6-button", "Done!")
       disableKey("button#ex6-button")
@@ -158,9 +165,11 @@ object AsyncWorkflow {
 
   // Example 7
   def ex07() = async {
-    val _show = show("div#ex7-messages", _: String, _: Boolean)
+    var append = false
+    val keyPressed = new Chan[MouseEvent]
+    val _show = show("div#ex7-messages", _: String, append)
 
-    _show("Click button to start tracking the mouse!", false)
+    append = _show("Click button to start tracking the mouse!")
     await(chan7())
     show("button#ex7-button", "Stop")
 
@@ -168,13 +177,14 @@ object AsyncWorkflow {
     var running = true
     async {
       while (running) {
-        val event: MouseEvent = await(mousemove.filter(_.clientY % 5 == 0))
-        _show(s"[${event.clientX}, ${event.clientY}]", true)
+        val event: MouseEvent = await(keyPressed | mousemove)
+        if (event != null && event.clientY /*% 5*/ == 0) _show(s"[${event.clientX}, ${event.clientY}]")
       }
-      _show("Done!", true)
+      _show("Done!")
     }
     await(chan7())
     running = false
+    keyPressed() = null
 
     show("button#ex7-button", "Done!")
     disableKey("button#ex7-button")
@@ -182,17 +192,17 @@ object AsyncWorkflow {
 
   // Example 8
   def ex08() = async {
-    val n = 10
-    val _show = show("div#ex8-messages", _: String, _: Boolean)
+    var append = false
+    val (n, _show) = (10, show("div#ex8-messages", _: String, append))
 
-    _show(s"Click the button $n times!", false)
+    append = _show(s"Click the button $n times!")
     var i = 0
     while (i < n) {
       i += 1
       await(chan8())
-      _show(f"<PRE>$i%3d click${if (i > 1) "s!" else " !"}%s</PRE>", true)
+      _show(f"<PRE>$i%3d click${if (i > 1) "s!" else " !"}%s</PRE>")
     }
-    _show("Done!", true)
+    _show("Done!")
   }
 
   // Example 9
@@ -202,8 +212,8 @@ object AsyncWorkflow {
     while (true) {
       grayOut(idx, "button#ex9-button-prev", "button#ex9-button-next", list, idx, "td#ex9-card")
       await(chan9()) match {
-        case Left => idx = Math.max(idx - 1, 0)
-        case Right => idx = Math.min(idx + 1, UpperBound)
+        case Left => idx = math.max(idx - 1, 0)
+        case Right => idx = math.min(idx + 1, UpperBound)
       }
     }
   }
@@ -242,7 +252,6 @@ object AsyncWorkflow {
 
     }
   }
-
 
   /** Disable a key by its given id */
   def disableKey(buttonId: String): Unit = jQuery(buttonId).addClass("disabled")
@@ -341,17 +350,10 @@ class Chan[T]() {
 
 /**
  * Given a target DOM element and event type create and return a channel of observed events.
- * Can supply the channel to receive events as third optional argument.
  */
 object Chan {
-  def apply[T](domElemId: String, signal: T) = {
-    val instance = new Chan[T]()
-    // An assignment to an instance of a Scala class calls the update method.
-    jQuery(domElemId).click({ () => instance() = signal })
-    instance
-  }
 
-  def apply(domElemId: String): Chan[Null] = apply(domElemId, null)
+  def apply(domElemId: String): Chan[Null] = apply((domElemId, null))
 
   def apply[T](domElemIdCombies: (String, T)*) = {
     val instance = new Chan[T]()
