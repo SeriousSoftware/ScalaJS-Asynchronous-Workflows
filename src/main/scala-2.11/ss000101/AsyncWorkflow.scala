@@ -9,6 +9,7 @@ import scala.concurrent.{Future, Promise}
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.scalajs.js.annotation.JSExport
 import scala.scalajs.js.Date
+import scalatags.Text.all._
 
 /**
  * Even JS is single threaded, in an async block, blocking reads can
@@ -49,8 +50,7 @@ object AsyncWorkflow {
    */
   def show(display: String, message: String, append: Boolean = false): Boolean = {
     val item = jQuery(display)
-    if (append) item.append(s"<p>$message</p>")
-    else item.html(s"<p>$message</p>")
+    if (append) item.append(pre(message).toString()) else item.html(p(message).toString())
     true
   }
 
@@ -178,7 +178,7 @@ object AsyncWorkflow {
     async {
       while (running) {
         val event: MouseEvent = await(keyPressed | mousemove)
-        if (event != null && event.clientY /*% 5*/ == 0) _show(s"[${event.clientX}, ${event.clientY}]")
+        if (event != null && event.clientY == 0) _show(s"[${event.clientX}, ${event.clientY}]")
       }
       _show("Done!")
     }
@@ -200,7 +200,7 @@ object AsyncWorkflow {
     while (i < n) {
       i += 1
       await(chan8())
-      _show(f"<PRE>$i%3d click${if (i > 1) "s!" else " !"}%s</PRE>")
+      _show(f"$i%3d click${if (i > 1) "s!" else " !"}")
     }
     _show("Done!")
   }
