@@ -9,7 +9,7 @@ import scala.concurrent.{Future, Promise}
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.scalajs.js.annotation.JSExport
 import scala.scalajs.js.Date
-import scalatags.Text.all._
+import scalatags.Text.all.{p,pre,stringFrag}
 
 /**
  * Even JS is single threaded, in an async block, blocking reads can
