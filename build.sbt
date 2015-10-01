@@ -15,7 +15,7 @@ workbenchSettings
 name := "Asynchronous Workflows"
 scalaVersion := "2.11.7"
 
-scalacOptions ++= Seq("-feature", "-Yno-lub")
+scalacOptions ++= Seq("-feature")
 
 // Optional, necessary to sbt run, needs phantomJS to be installed.
 jsDependencies += RuntimeDOM

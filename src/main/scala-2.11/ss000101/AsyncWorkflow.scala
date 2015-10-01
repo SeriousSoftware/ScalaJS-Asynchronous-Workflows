@@ -38,7 +38,9 @@ object AsyncWorkflow {
       Chan("button#ex10-button-start-stop"),
       Chan(("button#ex10-button-next", Right), ("button#ex10-button-next", Left)),
       Chan("button#ex11-button"))
-  val mousemove = new Channel[MouseEvent](document.onmousemove = _)
+  val mousemove: Channel[MouseEvent] = new Channel[MouseEvent](document.onmousemove = _)
+  val mousemove0 = Chan[MouseEvent]
+  val mousemove1 = Chan[MouseEvent]
 
   @JSExport
   def initialization() = {} // Called from the page, let all the object code run
@@ -55,8 +57,16 @@ object AsyncWorkflow {
     true
   }
 
-  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+  /* Distribution helper for mouse events */
+  async {
+    while (true) {
+      val event: MouseEvent = await(mousemove())
+      mousemove0.update(event)
+      mousemove1.update(event)
+    }
+  }
 
+  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   // Example 1
   def ex01() =
@@ -157,12 +167,11 @@ object AsyncWorkflow {
       await(chan6())
       show("button#ex6-button", "Stop")
 
-//      val mousemove = new Channel[MouseEvent](document.onmousemove = _)
       val keyPressed = Chan[MouseEvent]
       var running = true
       async {
         while (running) {
-          val event: MouseEvent = await(mousemove | keyPressed)
+          val event: MouseEvent = await(mousemove0 || keyPressed)
           if (event != null)
             _show(s"[${event.clientX}, ${event.clientY}]")
         }
@@ -180,18 +189,17 @@ object AsyncWorkflow {
   // Example 7
   def ex07() = async {
     var append = false
-    val keyPressed = Channel[MouseEvent]
+    val keyPressed = new Channel[MouseEvent]
     val _show = show("div#ex7-messages", _: String, append)
 
     append = _show("Click button to start tracking the mouse!")
     await(chan7())
     show("button#ex7-button", "Stop")
 
-//    val mousemove = new Channel[MouseEvent](document.onmousemove = _)
     var running = true
     async {
       while (running) {
-        val event: MouseEvent = await(keyPressed | mousemove)
+        val event: MouseEvent = await(keyPressed || mousemove1)
         if (event != null && event.clientY % 5 == 0) _show(s"[${event.clientX}, ${event.clientY}]")
       }
       _show("Done!")
@@ -328,11 +336,12 @@ object AsyncWorkflow {
  */
 object Chan {
 
-  def apply[T]() : Channel[T] = Channel[T]
+  def apply[T](): Channel[T] = new Channel[T]
+
   def apply(domElemId: String): Channel[Null] = apply((domElemId, null))
 
   def apply[T](domElemIdCombies: (String, T)*): Channel[T] = {
-    val instance = Channel[T]
+    val instance = new Channel[T]
     // An assignment to an instance of a Scala class calls the update method.
     domElemIdCombies.foreach { combi => jQuery(combi._1).click({ () => instance() = combi._2 }) }
     instance
