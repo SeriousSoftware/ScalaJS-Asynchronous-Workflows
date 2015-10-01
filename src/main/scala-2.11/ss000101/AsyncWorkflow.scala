@@ -3,13 +3,13 @@ package ss000101
 import org.scalajs.dom.ext.KeyCode.{Left, Right}
 import org.scalajs.dom.{MouseEvent, document}
 import org.scalajs.jquery.{JQueryEventObject, jQuery}
+import pragmatiCSP._
 
 import scala.async.Async.{async, await}
-import scala.concurrent.{Future, Promise}
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-import scala.scalajs.js.annotation.JSExport
 import scala.scalajs.js.Date
-import scalatags.Text.all.{p,pre,stringFrag}
+import scala.scalajs.js.annotation.JSExport
+import scalatags.Text.all.{p, pre, stringFrag}
 
 /**
  * Even JS is single threaded, in an async block, blocking reads can
@@ -28,9 +28,9 @@ object AsyncWorkflow {
       Chan("button#ex3-button-a"),
       Chan("button#ex3-button-b"),
       Chan("button#ex4-button"),
-      new Chan[Date](),
+      Chan[Date](),
       Chan("button#ex5-button"),
-      new Chan[Date](),
+      Chan[Date](),
       Chan("button#ex6-button"),
       Chan("button#ex7-button"),
       Chan("button#ex8-button"),
@@ -38,6 +38,7 @@ object AsyncWorkflow {
       Chan("button#ex10-button-start-stop"),
       Chan(("button#ex10-button-next", Right), ("button#ex10-button-next", Left)),
       Chan("button#ex11-button"))
+  val mousemove = new Channel[MouseEvent](document.onmousemove = _)
 
   @JSExport
   def initialization() = {} // Called from the page, let all the object code run
@@ -55,6 +56,7 @@ object AsyncWorkflow {
   }
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
 
   // Example 1
   def ex01() =
@@ -83,7 +85,6 @@ object AsyncWorkflow {
 
   // Example 3
   def ex03() =
-
     async {
       var append = false
       val _show = show("div#ex3-messages", _: String, append)
@@ -96,8 +97,7 @@ object AsyncWorkflow {
       _show("Done!")
     }
 
-  //
-  //TODO Example 4
+  // Example 4
   def ex04() = async {
     var append = false
     val _show = show("div#ex4-messages", _: String, append)
@@ -105,13 +105,26 @@ object AsyncWorkflow {
     append = _show("Waiting for a click …")
     await(chan4())
     _show("Got a click!")
+    _show("Putting a value on another channel, stalled because nobody takes")
     chan4D() = new Date()
-    _show("We'll going further!")
-    await(chan4D())
     _show("But we'll never get this far!")
   }
 
-  //TODO Example 5
+  /*;; Example 4
+  (defn ex4 []
+  (let [clicks (events->chan (by-id "ex4-button-a") EventType.CLICK)
+  c0     (chan)
+  show!  (partial show! "ex4-messages")]
+  (go
+    (show! "Waiting for click.")
+    (<! clicks)
+    (show! "Putting a value on channel c0, cannot proceed until someone takes")
+    (>! c0 (js/Date.))
+    (show! "We'll never get this far!")
+    (<! c0))))*/
+
+
+  //Example 5
   def ex05() = {
     var append = false
     val _show = show("div#ex5-messages", _: String, append)
@@ -121,14 +134,14 @@ object AsyncWorkflow {
       await(chan5())
       _show("Got a click!")
       chan5D() = new Date()
-      _show("We'll going further!")
+      _show("1. Putting a value on another channel, stalled until someone takes")
       val date = await(chan5D())
-      _show(s"Someone put the value on the channel: ${date.toISOString()}")
+      _show(s"2. Someone put the value on the channel: ${date.toISOString()}")
     }
     async {
       while (true) {
         val date = await(chan5D())
-        _show(s"We got a value from waiting channel: ${date.toISOString()}")
+        _show(s"3. We got a value from waiting channel: ${date.toISOString()}")
         chan5D() = new Date()
       }
     }
@@ -144,8 +157,8 @@ object AsyncWorkflow {
       await(chan6())
       show("button#ex6-button", "Stop")
 
-      val mousemove = new Chan[MouseEvent](document.onmousemove = _)
-      val keyPressed = new Chan[MouseEvent]
+//      val mousemove = new Channel[MouseEvent](document.onmousemove = _)
+      val keyPressed = Chan[MouseEvent]
       var running = true
       async {
         while (running) {
@@ -157,7 +170,8 @@ object AsyncWorkflow {
       }
       await(chan6())
       running = false
-      keyPressed() = null
+      keyPressed() =
+        null
 
       show("button#ex6-button", "Done!")
       disableKey("button#ex6-button")
@@ -166,19 +180,19 @@ object AsyncWorkflow {
   // Example 7
   def ex07() = async {
     var append = false
-    val keyPressed = new Chan[MouseEvent]
+    val keyPressed = Channel[MouseEvent]
     val _show = show("div#ex7-messages", _: String, append)
 
     append = _show("Click button to start tracking the mouse!")
     await(chan7())
     show("button#ex7-button", "Stop")
 
-    val mousemove = new Chan[MouseEvent](document.onmousemove = _)
+//    val mousemove = new Channel[MouseEvent](document.onmousemove = _)
     var running = true
     async {
       while (running) {
         val event: MouseEvent = await(keyPressed | mousemove)
-        if (event != null && event.clientY == 0) _show(s"[${event.clientX}, ${event.clientY}]")
+        if (event != null && event.clientY % 5 == 0) _show(s"[${event.clientX}, ${event.clientY}]")
       }
       _show("Done!")
     }
@@ -200,7 +214,7 @@ object AsyncWorkflow {
     while (i < n) {
       i += 1
       await(chan8())
-      _show(f"$i%3d click${if (i > 1) "s!" else " !"}")
+      _show(f"$i%2d click${if (i > 1) "s!" else " !"}")
     }
     _show("Done!")
   }
@@ -310,53 +324,15 @@ object AsyncWorkflow {
 }
 
 /**
- * Single item channel primitive
- *
- * @tparam T
- */
-class Chan[T]() {
-  private var promise: Promise[T] = Promise[T]()
-
-  /** Auxiliary constructor
-   Binds a handler with the "write" in casu update() */
-  def this(handler: (T => Unit) => Unit) {
-    this
-    handler(update)
-  }
-
-  /** Channels' "Write" or "put" function, called by an assigned to the instance(). */
-  def update(t: T): Unit = if (!promise.isCompleted) promise.success(t)
-
-  def filter(p: (T) => Boolean): Future[T] = {
-    apply().flatMap(value => if (p(value)) Future(value) else filter(p))
-  }
-
-  /** Channels' "Read" or "get" function, called by referring to the instance(). */
-  def apply(): Future[T] = {
-    promise = Promise[T]()
-    promise.future
-  }
-
-  /** Channels' "Alt" function for waiting on two events */
-  def |(other: Chan[T]): Future[T] = {
-    val p = Promise[T]()
-    for {
-      f <- Seq(other(), this())
-      t <- f
-    } p.trySuccess(t)
-    p.future
-  }
-}
-
-/**
  * Given a target DOM element and event type create and return a channel of observed events.
  */
 object Chan {
 
-  def apply(domElemId: String): Chan[Null] = apply((domElemId, null))
+  def apply[T]() : Channel[T] = Channel[T]
+  def apply(domElemId: String): Channel[Null] = apply((domElemId, null))
 
-  def apply[T](domElemIdCombies: (String, T)*) = {
-    val instance = new Chan[T]()
+  def apply[T](domElemIdCombies: (String, T)*): Channel[T] = {
+    val instance = Channel[T]
     // An assignment to an instance of a Scala class calls the update method.
     domElemIdCombies.foreach { combi => jQuery(combi._1).click({ () => instance() = combi._2 }) }
     instance
