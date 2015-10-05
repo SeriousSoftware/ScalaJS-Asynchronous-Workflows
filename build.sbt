@@ -4,7 +4,7 @@ organizationName := "Serious Software"
 organizationHomepage := Some(url("http://serioussoftware.github.io"))
 homepage := Some(url("http://serioussoftware.github.io"))
 startYear := Some(2015)
-description := "Scala.JS Demo for Asynchronous Workflows"
+description := "Scala.JS CSP Application with Async Await in sequential workflow"
 licenses += "EUPL v1.1" -> url("https://joinup.ec.europa.eu/community/eupl/og_page/european-union-public-licence-eupl-v11")
 
 // Turn this project into a Scala.js project by importing these settings

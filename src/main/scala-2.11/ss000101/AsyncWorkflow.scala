@@ -271,7 +271,7 @@ object AsyncWorkflow {
       disableKey("button#ex10-button-start-stop")
 
       grayOut(idx, "button#ex10-button-prev", "button#ex10-button-next")
-
+      jQuery(document).unbind("keydown")
     }
   }
 
@@ -294,9 +294,8 @@ object AsyncWorkflow {
               list: Vector[String] = Vector(),
               idx: Int = 0,
               displayId: String = "") = {
-
     val running = displayId != ""
-    require(running == (list != Vector()), "Func Grayout: List must be supplyed for the running mode.")
+    require(running == (list != Vector()), "Func grayOut: List must be supplied for the running mode.")
 
     lazy val UpperBound = list.length - 1
     if (running) {
