@@ -38,9 +38,9 @@ object AsyncWorkflow {
       Chan("button#ex10-button-start-stop"),
       Chan(("button#ex10-button-next", Right), ("button#ex10-button-next", Left)),
       Chan("button#ex11-button"))
-  val mousemove: Channel[MouseEvent] = new Channel[MouseEvent](document.onmousemove = _)
-  val mousemove0 = Chan[MouseEvent]
-  val mousemove1 = Chan[MouseEvent]
+  val mouseChannel: Channel[MouseEvent] = new Channel[MouseEvent](document.onmousemove = _)
+  val mouseChan0 = Chan[MouseEvent]
+  val mouseChan1 = Chan[MouseEvent]
 
   @JSExport
   def initialization() = {} // Called from the page, let all the object code run
@@ -60,9 +60,9 @@ object AsyncWorkflow {
   /* Distribution helper for mouse events */
   async {
     while (true) {
-      val event: MouseEvent = await(mousemove())
-      mousemove0.update(event)
-      mousemove1.update(event)
+      val event: MouseEvent = await(mouseChannel())
+      mouseChan0.update(event)
+      mouseChan1.update(event)
     }
   }
 
@@ -113,7 +113,7 @@ object AsyncWorkflow {
     val _show = show("div#ex4-messages", _: String, append)
 
     append = _show("Waiting for a click …")
-    await(chan4())
+//    await(chan4())
     _show("Got a click!")
     _show("Putting a value on another channel, stalled because nobody takes")
     chan4D() = new Date()
@@ -171,7 +171,7 @@ object AsyncWorkflow {
       var running = true
       async {
         while (running) {
-          val event: MouseEvent = await(mousemove0 || keyPressed)
+          val event: MouseEvent = await(mouseChan0 | keyPressed)
           if (event != null)
             _show(s"[${event.clientX}, ${event.clientY}]")
         }
@@ -199,7 +199,7 @@ object AsyncWorkflow {
     var running = true
     async {
       while (running) {
-        val event: MouseEvent = await(keyPressed || mousemove1)
+        val event: MouseEvent = await(keyPressed | mouseChan1)
         if (event != null && event.clientY % 5 == 0) _show(s"[${event.clientX}, ${event.clientY}]")
       }
       _show("Done!")
