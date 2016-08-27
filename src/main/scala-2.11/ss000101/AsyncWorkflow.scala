@@ -342,7 +342,8 @@ object Chan {
   def apply[T](domElemIdCombies: (String, T)*): Channel[T] = {
     val instance = new Channel[T]
     // An assignment to an instance of a Scala class calls the update method.
-    domElemIdCombies.foreach { combi => jQuery(combi._1).click({ () => instance() = combi._2 }) }
+    domElemIdCombies.foreach { case (domElemId, keyCode) => jQuery(domElemId).click({ () => instance() = keyCode }) }
     instance
   }
 }
+

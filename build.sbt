@@ -13,7 +13,7 @@ workbenchSettings
 
 // Name is a prefix in the object code filename.
 name := "Asynchronous Workflows"
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
 scalacOptions ++= Seq("-feature")
 
@@ -22,11 +22,10 @@ jsDependencies += RuntimeDOM
 scalaJSStage in Global := FastOptStage
 
 libraryDependencies ++= Seq(
-  "org.scala-lang.modules" %% "scala-async" % "0.9.5",
-  "org.scala-js" %%% "scalajs-dom" % "0.8.2",
-  "be.doeraene" %%% "scalajs-jquery" % "0.8.0",
-  "com.lihaoyi" %%% "scalatags" % "0.5.2",
-  "com.lihaoyi" %%% "utest" % "0.3.1" % "test"
+  "be.doeraene"           %%% "scalajs-jquery" % "0.8.1",
+  "com.lihaoyi"           %%% "scalatags"      % "0.6.0",
+  "org.scala-js"          %%% "scalajs-dom"    % "0.9.1",
+  "org.scala-lang.modules" %% "scala-async"    % "0.9.5"
 )
 skip in packageJSDependencies := false // All JavaScript dependencies to be concatenated to a single file
 
@@ -34,5 +33,3 @@ skip in packageJSDependencies := false // All JavaScript dependencies to be conc
 bootSnippet := "ss000101.AsyncWorkflow().initialization();"
 // Update without refreshing the page every time fastOptJS completes
 updateBrowsers <<= updateBrowsers.triggeredBy(fastOptJS in Compile)
-
-testFrameworks += new TestFramework("utest.runner.Framework")
