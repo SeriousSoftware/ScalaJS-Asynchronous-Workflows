@@ -22,10 +22,11 @@ jsDependencies += RuntimeDOM
 scalaJSStage in Global := FastOptStage
 
 libraryDependencies ++= Seq(
-  "be.doeraene"           %%% "scalajs-jquery" % "0.8.1",
-  "com.lihaoyi"           %%% "scalatags"      % "0.6.0",
-  "org.scala-js"          %%% "scalajs-dom"    % "0.9.1",
-  "org.scala-lang.modules" %% "scala-async"    % "0.9.5"
+  "org.scala-lang.modules" %% "scala-async" % "0.9.5",
+  "org.scala-js" %%% "scalajs-dom" % "0.8.2",
+  "be.doeraene" %%% "scalajs-jquery" % "0.8.0",
+  "com.lihaoyi" %%% "scalatags" % "0.5.2",
+  "com.lihaoyi" %%% "utest" % "0.3.1" % "test"
 )
 skip in packageJSDependencies := false // All JavaScript dependencies to be concatenated to a single file
 
