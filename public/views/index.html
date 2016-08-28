@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<!--
+  ~ index.html 2016-08-28 Asynchronous Workflows
+  ~ ©2016 by F.W. van den Berg
+  ~ Licensed under the EUPL V.1.1
+  ~
+  ~  This Software is provided to You under the terms of the European Union Public License (the "EUPL") version 1.1
+  ~  as published by the European Union. Any use of this Software, other than as authorized under this License is
+  ~  strictly prohibited (to the extent such use is covered by a right of the copyright holder of this Software).
+  ~
+  ~  This Software is provided under the License on an "AS IS" basis and without warranties of any kind concerning
+  ~  the Software, including without limitation merchantability, fitness for a particular purpose, absence of defects
+  ~  or errors, accuracy, and non-infringement of intellectual property rights other than copyright. This disclaimer
+  ~  of warranty is an essential part of the License and a condition for the grant of any rights to this Software.
+  -->
+
+<html class="no-js" lang="">
+<head>
+    <meta charset=UTF-8>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name=viewport content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Asynchronous Workflows</title>
+    <meta name=description
+          content="Scala.js CSP Application with Async Await in sequential workflow.">
+    <meta name=author content="FvdB">
+    <meta name=generator content="Scala.js Scalatags">
+    <meta name=versionId content="2016-08">
+
+    <link rel=apple-touch-icon href="img/apple-touch-icon.png">
+    <!-- Place favicon.ico in the img directory -->
+    <link rel="icon" type="image/png" href="img/scala-js-logo-32.png">
+
+    <!-- Custom styles for this page -->
+    <link rel=stylesheet media="screen" href="css/main.css">
+
+    <!--<style type="text/css"></style>-->
+</head>
+
+<body style="margin:32px;padding:0">
+<!--[if lt IE 8]>
+<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">
+    upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
+
+<!-- Add your site or application content here -->
+<a href="https://github.com/SeriousSoftware/Sjs-Asynchronous-Workflows"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+<center>
+    <h3>
+        <br/>You should really be looking at the code when you go through these examples.<br/>
+        Reach for your favorite editor and open up src\main\scala-2.11\ss000101\AsyncWorkflow.scala
+    </h3>
+</center>
+<!-- Example 1 -->
+<div id="ex1" class="example">
+    <h2>Example 1</h2>
+    <table>
+        <tr>
+            <td class="left">
+                <button id="ex1-button">Click me</button>
+            </td>
+            <td id="ex1-display" class="display">
+                <div id="ex1-messages"></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- Example 2 -->
+<div id="ex2" class="example">
+    <h2>Example 2</h2>
+    <table>
+        <tr>
+            <td class="left">
+                <button id="ex2-button">Click me</button>
+            </td>
+            <td id="ex2-display" class="display">
+                <div id="ex2-messages"></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- Example 3 -->
+<div id="ex3" class="example">
+    <h2>Example 3</h2>
+    <table>
+        <tr>
+            <td class="left">
+                <button id="ex3-button-a">Button A</button>
+                <button id="ex3-button-b">Button B</button>
+            </td>
+            <td id="ex3-display" class="display">
+                <div id="ex3-messages"></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- Example 4 -->
+<div id="ex4" class="example">
+    <h2>Example 4</h2>
+    <table>
+        <tr>
+            <td class="left">
+                <button id="ex4-button">Go!</button>
+            </td>
+            <td id="ex4-display" class="display">
+                <div id="ex4-messages"></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- Example 5 -->
+<div id="ex5" class="example">
+    <h2>Example 5</h2>
+    <table>
+        <tr>
+            <td class="left">
+                <button id="ex5-button">Go!</button>
+            </td>
+            <td id="ex5-display" class="display">
+                <div id="ex5-messages"></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- Example 6 -->
+<div id="ex6" class="example">
+    <h2>Example 6</h2>
+    <table>
+        <tr>
+            <td class="left">
+                <button id="ex6-button">Go!</button>
+            </td>
+            <td id="ex6-display" class="display">
+                <div class="scrolling">
+                    <div id="ex6-messages"></div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- Example 7 -->
+<div id="ex7" class="example">
+    <h2>Example 7</h2>
+    <table>
+        <tr>
+            <td class="left">
+                <button id="ex7-button">Go!</button>
+            </td>
+            <td id="ex7-display" class="display">
+                <div class="scrolling">
+                    <div id="ex7-messages"></div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- Example 8 -->
+<div id="ex8" class="example">
+    <h2>Example 8</h2>
+    <table>
+        <tr>
+            <td class="left">
+                <button id="ex8-button">Click me!</button>
+            </td>
+            <td id="ex8-display" class="display card">
+                <div class="scrolling">
+                    <div id="ex8-messages"></div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- Example 9 -->
+<div id="ex9" class="example">
+    <h2>Example 9</h2>
+    <table>
+        <tr>
+            <td class="left">
+                <button id="ex9-button-prev">Previous</button>
+                <button id="ex9-button-next">Next</button>
+            </td>
+            <td id="ex9-card" class="display card"></td>
+        </tr>
+    </table>
+</div>
+
+<!-- Example 10 -->
+<div id="ex10" class="example">
+    <h2>Example 10</h2>
+
+    <h3>Example 10 is like Example 9, but with support for the right and left arrow keys on your keyboard.</h3>
+    <table>
+        <tr>
+            <td class="left">
+                <button id="ex10-button-start-stop">Start!</button>
+                <button id="ex10-button-prev">Previous</button>
+                <button id="ex10-button-next">Next</button>
+            </td>
+            <td id="ex10-card" class="display card"></td>
+        </tr>
+    </table>
+</div>
+
+<!-- Example 11 -->
+<div id="ex11" class="example">
+    <h2>Example 11</h2>
+
+    <h3>Stopping takes a while. Can you make it stop faster?</h3>
+    <table>
+        <tr>
+            <td class="left">
+                <button id="ex11-button-start-stop">Start!</button>
+            </td>
+            <td id="ex11-card" class="display card">
+                <canvas id="canvas" width="400" height="400"></canvas>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="content wrap">
+    <div style="display: block" id="content main"></div>
+    <!--<canvas id="canvas main" style="border:1px solid #000000;display: block;overflow: scroll;"width="255" height="255">
+            Your browser does not support HTML5 Canvas.
+        </canvas>-->
+</div>
+
+<!-- Include JavaScript dependencies -->
+<script type="text/javascript" src="../main-jsdeps.min.js"></script>
+<!-- Include Scala.js compiled code -->
+<script type="text/javascript" src="../main-opt.js"></script>
+<!-- Run JSApp -->
+<!--<script type="text/javascript" src="../main-launcher.js"></script>-->
+<script> ss000101.AsyncWorkflow().initialization();</script>
+</body>
+</html>
