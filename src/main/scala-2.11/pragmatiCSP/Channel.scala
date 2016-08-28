@@ -3,42 +3,14 @@ package pragmatiCSP
 import scala.concurrent.{Future, Promise}
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
-class InternChan[T]() {
-  private var promise: Promise[T] = Promise[T]()
+trait Source[T] {
+  protected var promise: Promise[T] = Promise[T]()
 
   /** Channels' "Write" or "put" function, called by an assigned to the instance(). */
   def update(t: T): Unit = if (!promise.isCompleted) promise.success(t)
-
-  /** Channels' "Read" or "get" function, called by referring to the instance(). */
-  def apply(): Future[T] = {
-    promise = Promise[T]()
-    promise.future
-  }
 }
 
-/**
- * Single item channel primitive
- *
- * @tparam T
- */
-class Channel[T]() {
-  private var promise: Promise[T] = Promise[T]()
-
-  /** Auxiliary constructor
-    * Binds a continuation  with the "write" in casu update()
-    * @param cont
-    */
-  def this(cont: (T => Unit) => Unit) {
-    this
-    cont(update)
-  }
-
-  /** Channels' "Write" or "put" function, called by an assigned to the instance(). */
-  def update(t: T): Unit = if (!promise.isCompleted) promise.success(t)
-
-  def filter(p: (T) => Boolean): Future[T] = {
-    apply().flatMap(value => if (p(value)) Future(value) else filter(p))
-  }
+trait Sink[T] extends Source[T] {
 
   /** Channels' "Read" or "get" function, called by referring to the instance(). */
   def apply(): Future[T] = {
@@ -55,4 +27,30 @@ class Channel[T]() {
     } p.trySuccess(t)
     p.future
   }
+}
+
+/**
+ * Single item channel primitive
+ *
+ * A channel that publishes any incoming events to all listeners,
+ * dropping any events that come when nobody is listening.
+ *
+ * @tparam T Type of the message
+ */
+class Channel[T]() extends Source[T] with Sink[T] {
+
+  /** Auxiliary constructor
+   * Binds a continuation  with the "write" in casu update()
+   *
+   * @param cont Continuation
+   */
+  def this(cont: (T => Unit) => Unit) {
+    this
+    cont(update)
+  }
+
+  def filter(p: (T) => Boolean): Future[T] = {
+    apply().flatMap(value => if (p(value)) Future(value) else filter(p))
+  }
+
 }
