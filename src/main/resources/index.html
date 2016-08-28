@@ -1,4 +1,19 @@
 <!DOCTYPE html>
+<!--
+  ~ index.html 2016-08-28 Asynchronous Workflows
+  ~ ©2016 by F.W. van den Berg
+  ~ Licensed under the EUPL V.1.1
+  ~
+  ~  This Software is provided to You under the terms of the European Union Public License (the "EUPL") version 1.1
+  ~  as published by the European Union. Any use of this Software, other than as authorized under this License is
+  ~  strictly prohibited (to the extent such use is covered by a right of the copyright holder of this Software).
+  ~
+  ~  This Software is provided under the License on an "AS IS" basis and without warranties of any kind concerning
+  ~  the Software, including without limitation merchantability, fitness for a particular purpose, absence of defects
+  ~  or errors, accuracy, and non-infringement of intellectual property rights other than copyright. This disclaimer
+  ~  of warranty is an essential part of the License and a condition for the grant of any rights to this Software.
+  -->
+
 <html class="no-js" lang="">
 <head>
     <meta charset=UTF-8>
@@ -19,9 +34,6 @@
     <!-- Custom styles for this page -->
     <link rel=stylesheet media="screen" href="css/main.css">
 
-    <!--Workbench for development only -->
-    <script type="text/javascript" src="/workbench.js"></script>
-
     <!--<style type="text/css"></style>-->
 </head>
 
@@ -32,7 +44,7 @@
 <![endif]-->
 
 <!-- Add your site or application content here -->
-
+<a href="https://github.com/SeriousSoftware/Sjs-Asynchronous-Workflows"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
 <center>
     <h3>
         <br/>You should really be looking at the code when you go through these examples.<br/>
@@ -221,9 +233,9 @@
 </div>
 
 <!-- Include JavaScript dependencies -->
-<script type="text/javascript" src="../main-jsdeps.js"></script>
+<script type="text/javascript" src="../main-jsdeps.min.js"></script>
 <!-- Include Scala.js compiled code -->
-<script type="text/javascript" src="../main-fastopt.js"></script>
+<script type="text/javascript" src="../main-opt.js"></script>
 <!-- Run JSApp -->
 <!--<script type="text/javascript" src="../main-launcher.js"></script>-->
 <script> ss000101.AsyncWorkflow().initialization();</script>

@@ -12,7 +12,7 @@ trait Source[T] {
 
 trait Sink[T] extends Source[T] {
 
-  /** Channels' "Read" or "get" function, called by referring to the instance(). */
+  /** Channels' "Read", "take" or "get" function, called by referring to the instance(). */
   def apply(): Future[T] = {
     promise = Promise[T]()
     promise.future
@@ -22,7 +22,7 @@ trait Sink[T] extends Source[T] {
   def ||(other: Channel[T]): Future[T] = {
     val p = Promise[T]()
     for {
-      f <- Seq(other(), this())
+      f <- Seq(other(), this ())
       t <- f
     } p.trySuccess(t)
     p.future

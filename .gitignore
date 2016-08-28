@@ -1,6 +1,25 @@
-target/
+# sbt
+lib_managed
+project/project
+target
+
+# Worksheets (Eclipse or IntelliJ)
+*.sc
+
+# Eclipse
 .cache
 .classpath
 .project
-.settings/
+.scala_dependencies
+.settings
+.target
+.worksheet
+
+# IntelliJ
 .idea
+
+# Mac
+.DS_Store
+
+# Log files
+*.log

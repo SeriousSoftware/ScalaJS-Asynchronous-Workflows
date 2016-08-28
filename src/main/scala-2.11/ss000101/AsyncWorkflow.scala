@@ -190,6 +190,22 @@ object AsyncWorkflow {
     disableKey("button#ex7-button")
   }
 
+  /**
+   * Given a element id and a message string, alter a child paragraph element with the given message string.
+   *
+   * @param display
+   * @param message
+   * @param append
+   */
+  def show(display: String, message: String, append: Boolean = false): Boolean = {
+    val item = jQuery(display)
+    if (append) item.append(pre(message).toString()) else item.html(p(message).toString())
+    true
+  }
+
+  /** Disable a key by its given id */
+  def disableKey(buttonId: String): Unit = jQuery(buttonId).addClass("disabled")
+
   // Example 8
   def ex08() = async {
     var append = false
@@ -215,6 +231,39 @@ object AsyncWorkflow {
         case Left => idx = math.max(idx - 1, 0)
         case Right => idx = math.min(idx + 1, UpperBound)
       }
+    }
+  }
+
+  // Example 10
+  def ex10() {
+    var idx = 0
+    grayOut(idx, "button#ex10-button-prev", "button#ex10-button-next")
+
+    async {
+      await(chan10s())
+
+      jQuery(document).keydown {
+        evt: JQueryEventObject => chan10() = evt.which
+      }
+      show("button#ex10-button-start-stop", "Stop")
+      grayOut(idx, "button#ex10-button-prev", "button#ex10-button-next", list, idx, "td#ex10-card")
+
+      async {
+        while (true) {
+          grayOut(idx, "button#ex10-button-prev", "button#ex10-button-next", list, idx, "td#ex10-card")
+          await(chan10()) match {
+            case Left => idx = math.max(idx - 1, 0)
+            case Right => idx = math.min(idx + 1, list.size - 1)
+          }
+        }
+      }
+
+      await(chan10s())
+      show("button#ex10-button-start-stop", "Done!")
+      disableKey("button#ex10-button-start-stop")
+
+      grayOut(idx, "button#ex10-button-prev", "button#ex10-button-next")
+      jQuery(document).unbind("keydown")
     }
   }
 
@@ -257,55 +306,6 @@ object AsyncWorkflow {
     } else {
       disableKey(buttonPrev)
       disableKey(buttonNext)
-    }
-  }
-
-  /**
-   * Given a element id and a message string, alter a child paragraph element with the given message string.
-   *
-   * @param display
-   * @param message
-   * @param append
-   */
-  def show(display: String, message: String, append: Boolean = false): Boolean = {
-    val item = jQuery(display)
-    if (append) item.append(pre(message).toString()) else item.html(p(message).toString())
-    true
-  }
-
-  /** Disable a key by its given id */
-  def disableKey(buttonId: String): Unit = jQuery(buttonId).addClass("disabled")
-
-  // Example 10
-  def ex10() {
-    var idx = 0
-    grayOut(idx, "button#ex10-button-prev", "button#ex10-button-next")
-
-    async {
-      await(chan10s())
-
-      jQuery(document).keydown {
-        evt: JQueryEventObject => chan10() = evt.which
-      }
-      show("button#ex10-button-start-stop", "Stop")
-      grayOut(idx, "button#ex10-button-prev", "button#ex10-button-next", list, idx, "td#ex10-card")
-
-      async {
-        while (true) {
-          grayOut(idx, "button#ex10-button-prev", "button#ex10-button-next", list, idx, "td#ex10-card")
-          await(chan10()) match {
-            case Left => idx = math.max(idx - 1, 0)
-            case Right => idx = math.min(idx + 1, list.size - 1)
-          }
-        }
-      }
-
-      await(chan10s())
-      show("button#ex10-button-start-stop", "Done!")
-      disableKey("button#ex10-button-start-stop")
-
-      grayOut(idx, "button#ex10-button-prev", "button#ex10-button-next")
-      jQuery(document).unbind("keydown")
     }
   }
 
