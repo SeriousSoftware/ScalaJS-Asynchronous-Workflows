@@ -8,22 +8,33 @@ I was inspired by [Designing Front End Applications with core.async](http://go.c
 
 
 *This code is very much a work in progress.*
-[Live demo](https://SeriousSoftware.github.io/Sjs-Asynchronous-Workflows/public/views/index.html).
+[Live demo](http://goo.gl/xvrPEl).
 
 ## Usage
-1. Naturally, at least a Java SE Development Kit is installed on your platform and has a path to it enabling execution.
+1. Naturally, at least a Java SE Runtime Environment (JRE) is installed on your platform and has a path to it enables execution.
+1. (Optional) Test this by submitting a `java -version` command in a [Command Line Interface (CLI, terminal)](https://en.wikipedia.org/wiki/Command-line_interface). The output should like this:
+```
+java version "1.8.0_102"
+Java(TM) SE Runtime Environment (build 1.8.0_102-b14)
+Java HotSpot(TM) 64-Bit Server VM (build 25.102-b14, mixed mode)
+```
 1. Make sure sbt is runnable from almost any work directory, use eventually one of the platform depended installers:
     1. [Installing sbt on Mac](http://www.scala-sbt.org/release/docs/Installing-sbt-on-Mac.html) or
     1. [Installing sbt on Windows](http://www.scala-sbt.org/release/docs/Installing-sbt-on-Windows.html) or
     1. [Installing sbt on Linux](http://www.scala-sbt.org/release/docs/Installing-sbt-on-Linux.html) or
     1. [Manual installation](http://www.scala-sbt.org/release/docs/Manual-Installation.html) (not recommended)
-1. Run sbt in one of the next modes in a Command Line Interface (CLI, terminal), a compilation and a webserver will be
-    started using:
+1. (Optional ) To test if sbt is effective submit the `sbt sbtVersion` command. The response should like as this:
+```
+[info] Set current project to fransdev (in build file:/C:/Users/FransDev/)
+[info] 0.13.12
+```
+Remenber shells (CLI's) are not reactive. To pick up the new [environment variables](https://en.wikipedia.org/wiki/Environment_variable) the CLI must restarted.
+1. Run sbt in one of the next modes in a CLI, a compilation will be started and a local web server will be spinned up using:
     1. Inline mode on the command line: `sbt fastOptJS` or
     1. Interactive mode, start first the sbt by hitting in the CLI `sbt` followed by `fastOptJS` on the sbt prompt, or
     1. Triggered execution by a `~` before the command so `~fastOptJS`. This command will execute and wait after the
     target code is in time behind the source code (Auto build).
-1.  sbt will give a notice that the server is listening by the message: "Bound to localhost/127.0.0.1:12345"
+1.  sbt will give a notice that the server is listening by the message: `Bound to localhost/127.0.0.1:12345`
     (Ignore the dead letter notifications)
 1. Open this application in a browser on [this given URL](http://localhost:12345/target/scala-2.11/classes/index-dev.html)
 

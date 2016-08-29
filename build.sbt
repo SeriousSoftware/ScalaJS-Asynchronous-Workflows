@@ -32,12 +32,34 @@ enablePlugins(ScalaJSPlugin)
 
 // Necessary for testing
 jsDependencies += RuntimeDOM
-// Turn this project into a Scala.js project by importing these setting
-workbenchSettings
+scalaJSUseRhino in Global := false
+jsEnv := PhantomJSEnv(autoExit = false).value
 
+// If true, a launcher script src="../[normalizedName]-launcher.js will be generated
+// that always calls the main def indicated by the used JSApp trait.
+persistLauncher := true
+persistLauncher in Test := false
 
+// Will create [normalizedName]-jsdeps.js containing all JavaScript libraries
+// jsDependencies ++= Seq("org.webjars" % "jquery" % "3.1.0" / "3.1.0/jquery.js")
+// jsDependencies += "org.webjars" % "bootstrap" % "3.3.6" / "bootstrap.js" minified "bootstrap.min.js" dependsOn "2.2.4/jquery.js"
 
-// Workbench has to know how to restart your application.
-bootSnippet := "ss000101.AsyncWorkflow().initialization();"
-// Update without refreshing the page every time fastOptJS completes
-updateBrowsers <<= updateBrowsers.triggeredBy(fastOptJS in Compile)
+// ScalaTest settings //
+// testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oF")
+
+// Workbench settings **
+if (sys.env.isDefinedAt("CI")) {
+  println("Workbench disabled ", sys.env.getOrElse("CI", "?"))
+  Seq.empty
+} else {
+  println("Workbench enabled")
+  workbenchSettings
+}
+
+if (sys.env.isDefinedAt("CI")) normalizedName := normalizedName.value // Dummy
+else // Update without refreshing the page every time fastOptJS completes
+  refreshBrowsers <<= refreshBrowsers.triggeredBy(fastOptJS in Compile)
+
+if (sys.env.isDefinedAt("CI")) normalizedName := normalizedName.value
+else // Workbench has to know how to restart your application.
+  bootSnippet := "ss000101.AsyncWorkflow().main();"
