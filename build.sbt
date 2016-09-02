@@ -15,13 +15,12 @@ organizationHomepage := Some(url("http://serioussoftware.github.io"))
 scalaVersion in ThisBuild := "2.11.8"
 
 libraryDependencies ++= Seq(
-  "be.doeraene"           %%% "scalajs-jquery" % "0.8.1",
+  "be.doeraene"           %%% "scalajs-jquery" % "0.9.0",
   "com.lihaoyi"           %%% "scalatags"      % "0.6.0",
   "org.scala-js"          %%% "scalajs-dom"    % "0.9.1",
   "org.scalatest"         %%% "scalatest"      % "3.0.0" % "test",
   "org.scala-lang.modules" %% "scala-async"    % "0.9.5"
 )
-skip in packageJSDependencies := false // All JavaScript dependencies to be concatenated to a single file
 
 scalacOptions in (Compile,doc) ++= Seq("-doc-root-content", baseDirectory.value+"/src/main/scala-2.11/root-doc.md",
   "-groups", "-implicits")
@@ -41,8 +40,9 @@ persistLauncher := true
 persistLauncher in Test := false
 
 // Will create [normalizedName]-jsdeps.js containing all JavaScript libraries
-// jsDependencies ++= Seq("org.webjars" % "jquery" % "3.1.0" / "3.1.0/jquery.js")
+jsDependencies += "org.webjars" % "jquery" % "3.1.0" / "3.1.0/jquery.js"
 // jsDependencies += "org.webjars" % "bootstrap" % "3.3.6" / "bootstrap.js" minified "bootstrap.min.js" dependsOn "2.2.4/jquery.js"
+skip in packageJSDependencies := false // All JavaScript dependencies to be concatenated to a single file
 
 // ScalaTest settings //
 // testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oF")
@@ -58,7 +58,7 @@ if (sys.env.isDefinedAt("CI")) {
 
 if (sys.env.isDefinedAt("CI")) normalizedName := normalizedName.value // Dummy
 else // Update without refreshing the page every time fastOptJS completes
-  refreshBrowsers <<= refreshBrowsers.triggeredBy(fastOptJS in Compile)
+  updateBrowsers <<= updateBrowsers.triggeredBy(fastOptJS in Compile)
 
 if (sys.env.isDefinedAt("CI")) normalizedName := normalizedName.value
 else // Workbench has to know how to restart your application.

@@ -2,7 +2,7 @@
 <html class="no-js" lang="">
 <head>
     <meta charset=UTF-8>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv=X-UA-Compatible content="IE=edge">
     <meta name=viewport content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>Asynchronous Workflows</title>
@@ -12,9 +12,10 @@
     <meta name=generator content="Scala.js Scalatags">
     <meta name=versionId content="2016-08">
 
-    <link rel=apple-touch-icon href="img/apple-touch-icon.png">
     <!-- Place favicon.ico in the img directory -->
+    <!--<link rel=icon type="image/x-icon" href="img/favicon.ico" >-->
     <link rel=icon type="image/png" href="img/scala-js-logo-32.png">
+    <link rel=apple-touch-icon href="img/apple-touch-icon.png">
 
     <!-- Custom styles for this page -->
     <link rel=stylesheet media="screen" href="css/main.css">
@@ -31,14 +32,28 @@
     upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 
+<nav class="navbar navbar-inverse">
+    <div class="container">
+        <div class="navbar-header" id="p-header"></div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">Page 1</a></li>
+            <li><a href="#">Page 2</a></li>
+            <li><a href="#">Page 3</a></li>
+        </ul>
+    </div>
+</nav>
+
 <!-- Add your site or application content here -->
+<div class="container" id="content">
+</div>
 
 <center>
     <h3>
         <br/>You should really be looking at the code when you go through these examples.<br/>
-        Reach for your favorite editor and open up src\main\scala-2.11\ss000101\AsyncWorkflow.scala
+        Reach for your favorite editor and open up <a href="https://github.com/SeriousSoftware/Sjs-Asynchronous-Workflows/blob/master/src/main/scala-2.11/ss000101/AsyncWorkflow.scala">src\main\scala-2.11\ss000101\AsyncWorkflow.scala</a>
     </h3>
-</center>
+</center><hr>
 <!-- Example 1 -->
 <div id="ex1" class="example">
     <h2>Example 1</h2>
@@ -215,9 +230,7 @@
 </div>
 <div id="content wrap">
     <div style="display: block" id="content main"></div>
-    <!--<canvas id="canvas main" style="border:1px solid #000000;display: block;overflow: scroll;"width="255" height="255">
-            Your browser does not support HTML5 Canvas.
-        </canvas>-->
+    <!--<canvas id="canvas main" style="border:1px solid #000000;display: block;overflow: scroll;"width="255" height="255">Your browser doesn't support the HTML5 CANVAS tag.</canvas>-->
 </div>
 
 <!-- Include JavaScript dependencies -->
@@ -225,7 +238,6 @@
 <!-- Include Scala.js compiled code -->
 <script type="text/javascript" src="../main-fastopt.js"></script>
 <!-- Run JSApp -->
-<!--<script type="text/javascript" src="../main-launcher.js"></script>-->
-<script> ss000101.AsyncWorkflow().main();</script>
+<script type="text/javascript" src="../main-launcher.js"></script>
 </body>
 </html>

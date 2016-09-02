@@ -6,23 +6,20 @@ import org.scalajs.jquery.{JQueryEventObject, jQuery}
 import pragmatiCSP._
 
 import scala.async.Async.{async, await}
+import scala.concurrent.Future
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.scalajs.js.{Date, JSApp}
 import scalatags.Text.all.{p, pre, stringFrag}
 
 object AsyncWorkflow extends JSApp {
 
-  val chan7 = Chan("button#ex7-button")
-  val chan8 = Chan("button#ex8-button")
-  val chan9 = Chan(("button#ex9-button-next", Right), ("button#ex9-button-prev", Left))
-  val chan11 = Chan("button#ex11-button")
   private val (mouseChannel: Channel[MouseEvent], mouseChan0, mouseChan1) =
     (new Channel[MouseEvent](document.onmousemove = _), Chan[MouseEvent](), Chan[MouseEvent]())
 
   def main() = {} // Called from the page, let all the object code run
 
-  // Example 1
-  def ex01() = {
+  /** Example 1 */
+  def ex01() {
     val chan1 = Chan("button#ex1-button")
     async {
       var append = false
@@ -34,23 +31,8 @@ object AsyncWorkflow extends JSApp {
     }
   }
 
-  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-  /**
-   * Given a element id and a message string, alter a child paragraph element with the given message string.
-   *
-   * @param display
-   * @param message
-   * @param append
-   */
-  def show(display: String, message: String, append: Boolean = false): Boolean = {
-    val item = jQuery(display)
-    if (append) item.append(pre(message).toString()) else item.html(p(message).toString())
-    true
-  }
-
-  // Example 2
-  def ex02() = {
+  /** Example 2  */
+  def ex02() {
     val chan2 = Chan("button#ex2-button")
     async {
       var append = false
@@ -65,8 +47,8 @@ object AsyncWorkflow extends JSApp {
     }
   }
 
-  // Example 3
-  def ex03() = {
+  /** Example 3  */
+  def ex03() {
     val (chan3a, chan3b) = (Chan("button#ex3-button-a"), Chan("button#ex3-button-b"))
     async {
       var append = false
@@ -81,8 +63,8 @@ object AsyncWorkflow extends JSApp {
     }
   }
 
-  // Example 4
-  def ex04() = {
+  /** Example 4 */
+  def ex04() {
     val (chan4, chan4D) = (Chan("button#ex4-button"), Chan[Date]())
     async {
       var append = false
@@ -110,8 +92,8 @@ object AsyncWorkflow extends JSApp {
     (show! "We'll never get this far!")
     (<! c0))))*/
 
-  //Example 5
-  def ex05() = {
+  /** Example 5 */
+  def ex05() {
     val (chan5, chan5D) = (Chan("button#ex5-button"), Chan[Date]())
     var append = false
     val _show = show("div#ex5-messages", _: String, append)
@@ -134,8 +116,8 @@ object AsyncWorkflow extends JSApp {
     }
   }
 
-  // Example 6
-  def ex06() = {
+  /** Example 6 */
+  def ex06() {
     val chan6 = Chan("button#ex6-button")
     async {
       var append = false
@@ -165,8 +147,8 @@ object AsyncWorkflow extends JSApp {
     }
   }
 
-  // Example 7
-  def ex07() = {
+  /** Example 7 */
+  def ex07() {
     val chan7 = Chan("button#ex7-button")
     async {
       var append = false
@@ -194,11 +176,8 @@ object AsyncWorkflow extends JSApp {
     }
   }
 
-  /** Disable a key by its given id */
-  def disableKey(buttonId: String): Unit = jQuery(buttonId).addClass("disabled")
-
-  // Example 8
-  def ex08() = {
+  /** Example 8 */
+  def ex08() {
     val chan8 = Chan("button#ex8-button")
     async {
       var append = false
@@ -215,8 +194,8 @@ object AsyncWorkflow extends JSApp {
     }
   }
 
-  // Example 9
-  def ex09() = {
+  /** Example 9 */
+  def ex09() {
     val chan9 = Chan(("button#ex9-button-next", Right), ("button#ex9-button-prev", Left))
     async {
       val UpperBound = list.size - 1
@@ -231,12 +210,13 @@ object AsyncWorkflow extends JSApp {
     }
   }
 
-  def list = Vector("aardvark", "beetle", "cat", "dog", "elk", "ferret", "goose", "hippo", "ibis", "jellyfish", "kangaroo")
+  private def list =
+    Vector("aardvark", "beetle", "cat", "dog", "elk", "ferret", "goose", "hippo", "ibis", "jellyfish", "kangaroo")
 
-  // Example 10
+  /** Example 10 */
   def ex10() {
     val (chan10s, chan10) = (Chan("button#ex10-button-start-stop"),
-      Chan( ("button#ex10-button-prev", Left), ("button#ex10-button-next", Right)))
+      Chan(("button#ex10-button-prev", Left), ("button#ex10-button-next", Right)))
     var idx = 0
     grayOut(idx, "button#ex10-button-prev", "button#ex10-button-next")
 
@@ -268,6 +248,8 @@ object AsyncWorkflow extends JSApp {
     }
   }
 
+  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
   /**
    * Given a current index and the collection disable or enable the given previous and next controls.
    *
@@ -279,16 +261,17 @@ object AsyncWorkflow extends JSApp {
    * @param displayId
    * @return
    */
-  def grayOut(i: Int,
-              buttonPrev: String,
-              buttonNext: String,
-              list: Vector[String] = Vector(),
-              idx: Int = 0,
-              displayId: String = "") = {
+  private def grayOut(i: Int,
+                      buttonPrev: String,
+                      buttonNext: String,
+                      list: Vector[String] = Vector(),
+                      idx: Int = 0,
+                      displayId: String = "") = {
     val running = displayId != ""
+    lazy val UpperBound = list.length - 1
+
     require(running == (list != Vector()), "Func grayOut: List must be supplied for the running mode.")
 
-    lazy val UpperBound = list.length - 1
     if (running) {
       i match {
         case 0 =>
@@ -308,7 +291,16 @@ object AsyncWorkflow extends JSApp {
     }
   }
 
-  /* Distribution helper for mouse events */
+  private def show(display: String, message: String, append: Boolean = false): Boolean = {
+    val item = jQuery(display)
+    if (append) item.append(pre(message).toString()) else item.html(p(message).toString())
+    true
+  }
+
+  /** Disable a key by its given id */
+  private def disableKey(buttonId: String): Unit = jQuery(buttonId).addClass("disabled")
+
+  /* Distribution helper to multicast mouse events */
   async {
     while (true) {
       val event: MouseEvent = await(mouseChannel())
@@ -333,7 +325,7 @@ object AsyncWorkflow extends JSApp {
 /**
  * Given a target DOM element and event type create and return a channel of observed events.
  */
-object Chan {
+private object Chan {
 
   /**
    * Bare wait channel on a known event, message unnecessary.
@@ -357,4 +349,3 @@ object Chan {
     instance
   }
 }
-

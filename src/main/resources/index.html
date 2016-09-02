@@ -27,9 +27,10 @@
     <meta name=generator content="Scala.js Scalatags">
     <meta name=versionId content="2016-08">
 
-    <link rel=apple-touch-icon href="img/apple-touch-icon.png">
     <!-- Place favicon.ico in the img directory -->
+    <!--<link rel=icon type="image/x-icon" href="img/favicon.ico" >-->
     <link rel=icon type="image/png" href="img/scala-js-logo-32.png">
+    <link rel=apple-touch-icon href="img/apple-touch-icon.png">
 
     <!-- Custom styles for this page -->
     <link rel=stylesheet media="screen" href="css/main.css">
@@ -43,14 +44,28 @@
     upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 
+<nav class="navbar navbar-inverse">
+    <div class="container">
+        <div class="navbar-header" id="p-header"></div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">Page 1</a></li>
+            <li><a href="#">Page 2</a></li>
+            <li><a href="#">Page 3</a></li>
+        </ul>
+    </div>
+</nav>
+
 <!-- Add your site or application content here -->
-<a href="https://github.com/SeriousSoftware/Sjs-Asynchronous-Workflows"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+<div class="container" id="content">
+</div>
+
 <center>
     <h3>
         <br/>You should really be looking at the code when you go through these examples.<br/>
-        Reach for your favorite editor and open up src\main\scala-2.11\ss000101\AsyncWorkflow.scala
+        Reach for your favorite editor and open up <a href="https://github.com/SeriousSoftware/Sjs-Asynchronous-Workflows/blob/master/src/main/scala-2.11/ss000101/AsyncWorkflow.scala">src\main\scala-2.11\ss000101\AsyncWorkflow.scala</a>
     </h3>
-</center>
+</center><hr>
 <!-- Example 1 -->
 <div id="ex1" class="example">
     <h2>Example 1</h2>
@@ -227,9 +242,7 @@
 </div>
 <div id="content wrap">
     <div style="display: block" id="content main"></div>
-    <!--<canvas id="canvas main" style="border:1px solid #000000;display: block;overflow: scroll;"width="255" height="255">
-            Your browser does not support HTML5 Canvas.
-        </canvas>-->
+    <!--<canvas id="canvas main" style="border:1px solid #000000;display: block;overflow: scroll;"width="255" height="255">Your browser doesn't support the HTML5 CANVAS tag.</canvas>-->
 </div>
 
 <!-- Include JavaScript dependencies -->
@@ -237,7 +250,6 @@
 <!-- Include Scala.js compiled code -->
 <script type="text/javascript" src="../main-opt.js"></script>
 <!-- Run JSApp -->
-<!--<script type="text/javascript" src="../main-launcher.js"></script>-->
-<script> ss000101.AsyncWorkflow().initialization();</script>
+<script type="text/javascript" src="../main-launcher.js"></script>
 </body>
 </html>
