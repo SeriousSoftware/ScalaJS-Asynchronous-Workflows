@@ -12,14 +12,14 @@ organizationHomepage := Some(url("http://serioussoftware.github.io"))
       normalizedName := "main"
 
 // ** Scala dependencies **
-scalaVersion in ThisBuild := "2.11.8"
+scalaVersion in ThisBuild := "2.12.0"
 
 libraryDependencies ++= Seq(
-  "be.doeraene"           %%% "scalajs-jquery" % "0.9.0",
-  "com.lihaoyi"           %%% "scalatags"      % "0.6.0",
+  "be.doeraene"           %%% "scalajs-jquery" % "0.9.1",
+  "com.lihaoyi"           %%% "scalatags"      % "0.6.2",
   "org.scala-js"          %%% "scalajs-dom"    % "0.9.1",
-  "org.scalatest"         %%% "scalatest"      % "3.0.0" % "test",
-  "org.scala-lang.modules" %% "scala-async"    % "0.9.5"
+  "org.scalatest"         %%% "scalatest"      % "3.0.1" % "test",
+  "org.scala-lang.modules" %% "scala-async"    % "0.9.6"
 )
 
 scalacOptions in (Compile,doc) ++= Seq("-doc-root-content", baseDirectory.value+"/src/main/scala-2.11/root-doc.md",
@@ -31,7 +31,6 @@ enablePlugins(ScalaJSPlugin)
 
 // Necessary for testing
 jsDependencies += RuntimeDOM
-scalaJSUseRhino in Global := false
 jsEnv := PhantomJSEnv(autoExit = false).value
 
 // If true, a launcher script src="../[normalizedName]-launcher.js will be generated
@@ -40,26 +39,17 @@ persistLauncher := true
 persistLauncher in Test := false
 
 // Will create [normalizedName]-jsdeps.js containing all JavaScript libraries
-jsDependencies += "org.webjars" % "jquery" % "3.1.0" / "3.1.0/jquery.js"
+jsDependencies += "org.webjars" % "jquery" % "3.1.1" / "3.1.1/jquery.js"
 // jsDependencies += "org.webjars" % "bootstrap" % "3.3.6" / "bootstrap.js" minified "bootstrap.min.js" dependsOn "2.2.4/jquery.js"
 skip in packageJSDependencies := false // All JavaScript dependencies to be concatenated to a single file
 
 // ScalaTest settings //
 // testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oF")
 
-// Workbench settings **
+// Li Haoyi's Workbench settings **
 if (sys.env.isDefinedAt("CI")) {
-  println("Workbench disabled ", sys.env.getOrElse("CI", "?"))
+  println("[Info] Li Haoyi's workbench disabled ", sys.env.getOrElse("CI", "?"))
   Seq.empty
 } else {
-  println("Workbench enabled")
-  workbenchSettings
-}
-
-if (sys.env.isDefinedAt("CI")) normalizedName := normalizedName.value // Dummy
-else // Update without refreshing the page every time fastOptJS completes
-  updateBrowsers <<= updateBrowsers.triggeredBy(fastOptJS in Compile)
-
-if (sys.env.isDefinedAt("CI")) normalizedName := normalizedName.value
-else // Workbench has to know how to restart your application.
-  bootSnippet := "ss000101.AsyncWorkflow().main();"
+  refreshBrowsers <<= refreshBrowsers.triggeredBy(fastOptJS in Compile)
+  enablePlugins(WorkbenchPlugin)}

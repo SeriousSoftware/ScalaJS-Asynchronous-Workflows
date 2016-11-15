@@ -1,6 +1,8 @@
 # Scala.js Asynchronous Workflow
+<a href="http://www.w3.org/html/logo/">
+<img src="https://www.w3.org/html/logo/badge/html5-badge-h-css3-graphics-semantics.png" width="99" height="32" alt="HTML5 Powered with CSS3 / Styling, Graphics, 3D &amp; Effects, and Semantics" title="HTML5 Powered with CSS3 / Styling, Graphics, 3D &amp; Effects, and Semantics"></a>[![Scala.js](https://img.shields.io/badge/scala.js-0.6.13%2B-blue.svg?style=flat)](https://www.scala-js.org)
 ## Introduction
->Front End Application with Async Await for sequential workflow. It's cross compiled from Scala to JavaScript by use of Scala.js.
+>(Expirimental) Front End Application with Async Await for sequential workflow. It's cross compiled from Scala to JavaScript by use of Scala.js.
 Even JS is single threaded, in an async block, blocking reads can pause its execution without disturbing other parts of the application. That give the illusion of blocking, even in single-threaded context (i.e. JS hosts).
 Logic is written in a linear fashion.
 Await expressions let you write asynchronous code almost as if it were synchronous.
